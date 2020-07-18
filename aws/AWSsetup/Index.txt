@@ -1,0 +1,5 @@
+Install_AWS_CLI.dox
+sshkey.txt
+Launch AWS Instance
+TroposphereJSON.txt
+AnsibleSetup.txt
