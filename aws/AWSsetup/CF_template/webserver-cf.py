@@ -1,0 +1,72 @@
+#Using Troposphere created a JSON to use in Cloud Formation
+
+from troposphere import Ref, Template, Parameter, Output, Join, GetAtt, Base64
+import troposphere.ec2 as ec2
+
+t = Template()
+
+    # To Complete the Template you need
+    # Security group
+    # AMI id and Instance type
+    # SSH key pair
+
+    # Security Group creation
+secgrp = ec2.SecurityGroup("LampSecGrp")
+secgrp.GroupDescription = "Allow access through ports 80 and 22 to the web server"
+secgrp.SecurityGroupIngress = [
+ec2.SecurityGroupRule(IpProtocol='tcp', FromPort='22', ToPort='22', CidrIp = '0.0.0.0/0'),
+ec2.SecurityGroupRule(IpProtocol='tcp', FromPort='80', ToPort='80', CidrIp = '0.0.0.0/0')
+                                    ]
+t.add_resource(secgrp)
+## SSH Keypair cannot not be added through Troposphere Since we already created a Keypair in AWS
+## will use it as Parameter in Troposphere to use the ssh key pair while creation of the Instances.
+
+keypair = t.add_parameter(Parameter (
+        "KeyName",
+         Description = "Name of the SSH keypair that will be used to access the instance",
+         Type = "String"
+         ))
+# Create an Instance
+## Here Ref Function is not part of Troposphere or Python is it a part of Cloud Formation templet
+
+instance = ec2.Instance("Webserver")
+instance.ImageId = "ami-08706cb5f68222d09"
+instance.InstanceType = "t2.micro"
+instance.SecurityGroups = [Ref(secgrp)]
+# Ref is used because secgrp is having more than one attribute
+# Security Group needs only one parameter hence [] list is used.
+instance.KeyName = Ref(keypair)
+
+ud = Base64(Join('\n',
+               [
+                  "#!/bin/bash",
+                  "sudo yum -y install httpd",
+                  "sudo echo '<html><body><h1>Welcome to AWS </h1> <p> This is Deployed through Troposphere </p> </body></html>' > /var/www/html/test.html",
+                  "sudo service httpd start",
+                  "sudo chkconfig httpd on"
+                ]))
+instance.UserData = ud
+
+t.add_resource(instance)
+#Output to the user, Output is optional,
+#Adding Output will give you the user experience, like if you want to know PublicDns of instance to access
+#Output is part of Cloud formation template
+t.add_output(Output(
+            "InstanceAccess",
+             Description = "Command to use to access the instance using SSH",
+             Value = Join("", ["ssh -i ../LampKey.pem ec2-user@", GetAtt(instance, "PublicDnsName")])
+                   ))
+t.add_output(Output(
+            "WebUrl",
+             Description = "The URL to access the Web Server ",
+             Value = Join("",["http://",GetAtt(instance,"PublicDnsName")])
+                    ))
+
+# UserData is section where we can run commands inside EC2 Instance which is created
+# Adding data to User
+# to execute some command since it is using JSON Template calling through API in AWS
+# if we want to add any command to UserData, need to encode data with Base64
+# Base64 will encode Binary data and displaying as Text
+
+
+print(t.to_json())
