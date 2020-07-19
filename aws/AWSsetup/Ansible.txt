@@ -1,5 +1,7 @@
 Ansible setup
 
+/usr/local/bin/ansible
+
 create a folder /etc/ansible
 
 start with Invetory File
@@ -27,3 +29,135 @@ After that Run the ec2.py file
 Now ansible need to use this files.
 export EC2_INI_PATH=/etc/ansible/ec2.ini
 export ANSIBLE_HOSTS=/etc/ansible/ec2.py
+
+ansible --private-key ~/.ssh/LampKey.pem --user=ec2-user -m ping all
+
+In ~/.ssh/ folder
+chmod 400 LampKey.pem 
+create config file and add 
+sudo vi ~/.ssh/config
+	IdentityFile ~/.ssh/LampKey.pem
+	User ec2-user
+	StrictHostKeyChecking no
+	PasswordAuthentication no
+Instead of Typing ansible --private-key ~/.ssh/LampKey.pem --user=ec2-user -m ping all Type only
+ansible -m ping all
+-----output------
+ec2-instance | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+ansible all -a "df -h"
+----output------
+ec2-instance | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        483M   60K  483M   1% /dev
+tmpfs           493M     0  493M   0% /dev/shm
+/dev/xvda1      7.9G  1.2G  6.6G  15% /
+
+Create lamp.yml Yaml file for Ansible Play book
+sudo vi lamp.yml
+---
+- hosts: all
+  become: yes
+  tasks:
+          - name: Install Apache web server through ansible
+            yum:
+                    name: httpd
+                    state: present
+          - name: Ensure that Apache is up and Running and will autostart on system boot
+            service:
+                    name: httpd
+                    state: started
+                    enabled: true                                        
+----------output ----------------
+for command 
+ubuntu@ip-172-31-12-184:/etc/ansible$ ansible-playbook lamp.yml
+
+[WARNING]: Platform linux on host ec2-instance is using the discovered Python interpreter at /usr/bin/python, but future installation of another Python interpreter
+could change this. See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [ec2-instance]
+
+TASK [Install Apache web server through ansible] ***********************************************************************************************************************
+ok: [ec2-instance]
+
+TASK [Ensure that Apache is up and Running and will autostart on system boot] ******************************************************************************************
+ok: [ec2-instance]
+
+PLAY RECAP *************************************************************************************************************************************************************
+ec2-instance               : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+Now to Ignore the WARNING we have to create the ansible.cf file inside /etc/ansible
+remove ANSIBLE_HOSTS by 
+unset $ANSIBLE_HOSTS
+because we are adding in cfg file 
+
+cd /etc/ansible/
+sudo vi ansible.cfg
+[defaults]
+inventory = /etc/ansible/ec2.py
+
+Create a role for PHP
+ 
+change permission to /etc/ansible
+chown -R ubuntu .
+
+cd /etc/ansible/
+mkdir roles
+cd roles
+ansible-galaxy init php
+Roles will be creted
+
+Now crete a role for PHP
+cd tasks
+cat main.yml
+---
+# tasks file for php
+- name: Install PHP 7 with the most common package
+  yum:
+          name: "{{item}}"
+          state: present
+  with_items:
+          - php70
+          - php70-gd
+          -  php70-imap
+          -  php70-mbstring
+          -  php70-mysqlnd
+          -  php70-opcache
+          -  php70-pdo
+          -  php70-pecl-apcu
+  notify: restart Apache
+- name: Upload index.php file to the remore web directory
+  copy:
+          src: index.php
+          dest: /var/www/html
+          owner: ec2-user
+          group: ec2-user
+		  
+Need to add Handle to mange installation of packages
+
+cd handlers
+
+Unstall Apache before installing PHP
+
+create apache role
+add the tasks
+Refer Folders inside /DevOpsTraining/aws/AWSsetup/ansible
+
+edit lamp.yml
+remove all tasks
+and add this 
+sudo vi lamp.yml
+---
+- hosts: all
+  become: yes
+  roels:
+	- apache
+	- php
+	
+Finaly Run 
+ansible-playbook lamp.yml
