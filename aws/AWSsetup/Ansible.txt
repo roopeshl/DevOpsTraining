@@ -1,0 +1,29 @@
+Ansible setup
+
+create a folder /etc/ansible
+
+start with Invetory File
+
+Ec2.py Script is create dynamic inventory files
+
+Amazon Dynamic Invemtory File
+Refer 
+https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html#inventory-script-example-aws-ec2
+
+Inside /etc/ansible/
+sudo wget https://raw.githubusercontent.com/ansible/ansible/stable-2.9/contrib/inventory/ec2.py   (Script)
+sudo wget https://raw.githubusercontent.com/ansible/ansible/stable-2.9/contrib/inventory/ec2.ini (Configuration File)
+
+sudo chmod +x ec2.py
+
+Update region in ec2.ini file
+
+regions = ap-south-1
+#regions_exclude = us-gov-west-1, cn-north-1
+
+After that Run the ec2.py file 
+./ec2.py --list
+
+Now ansible need to use this files.
+export EC2_INI_PATH=/etc/ansible/ec2.ini
+export ANSIBLE_HOSTS=/etc/ansible/ec2.py

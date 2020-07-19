@@ -1,0 +1,29 @@
+Get the Instance public Dns Name from the running instance
+aws ec2 describe-instances --instance-ids i-0468c45b665e7fcf4 --query "Reservations[*].Instances[*].PublicDnsName"
+[
+        "ec2-15-206-93-148.ap-south-1.compute.amazonaws.com"
+]
+
+
+Use the publicdns name to login to the instance
+ssh -i LampKey.pem ec2-user@ec2-15-206-93-148.ap-south-1.compute.amazonaws.com
+
+Install httpd(apache webserver) server inside the ec2 instance
+sudo yum -y install httpd 
+
+Start the server by 
+sudo service httpd start
+
+Start ther server when instance boots
+sudo chkconfig httpd on
+
+Check in the browser with this URL ec2-15-206-93-148.ap-south-1.compute.amazonaws.com a static web page is displayed 
+It means apache web server is installed
+
+To add the new html page to it 
+sudo vi /var/www/html/test.html
+<html>
+	<body> Welcom to AWS DevOps Course </body>
+</html>
+save it and try 
+http://ec2-15-206-93-148.ap-south-1.compute.amazonaws.com/test.html

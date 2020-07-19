@@ -1,0 +1,34 @@
+AMI Id = ami-08706cb5f68222d09
+instance type = 
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAqdy2fXhxDO+qTd3a3LmEG3tzX7bznMNksrEqiLmblEWobshNO+Ifmv1yD+BO
+Q9x7o63Ki+htNJQkJXSnmqNcam8Bvsb4jLJoSkFzYWEc7aLG+ut7O0sO6Icr8vnEqxG2sfMzdkvm
+HCCynfFmWEwNwyf18geoBZCJjLQzh1IBFvWZoaDHHjoYlfs8e4Pz3PAxVMihlroBHLIvc4XrMldi
+l7jktzjLxorgF5T5f09gnuXmrozXzR5D6fIkawXTdW7P0Kuxih+e9nvCtH0qasy3TxZ8T4LP+S+I
+8n2D7R7f+OxdnCWaJETIvzDZyBZNCH6ymz9mPevqdqllfdIrJ94jFQIDAQABAoIBAG+sKVXH7xsA
+HcjfiFoApTekK6/LidGQLA3GqB4HWJ9cRGXAzfYGrZyp72k8oHfA5pAvW7AreFBO7Iyrat0hdUqL
+/Gu+R/3H9QSMjxyAShJ5J7QjSHss13pME7rENmX5WVEYgMbPE1N+s69e21hFd+7LwMgD/JTb93JH
+rnDSmuDKNeki1pMnQo4ZLgNn2TbLRQgVcEYaFU72YSZzz1lxeLX9NL8L4e+Bnnni3diVXfwDdTSJ
+dt1mQLKFkdz9IHU2pn7CYrh2BZ2GHY3iqg/q+JOqrB7KILC5zd14gRPjwhRjYxHzy7wEdrWDlVjF
+CfuwnjSCJ9Ad7SOl/ED/Lt+eVWkCgYEA8EmaoI8gc4qDOma1o433l0gItV+JX2Gw0Akpwuj6NNTQ
+qLJ82vXEQNjJnlanK3Gv82ZICws606W6AizVwIATr3hqdp44KqMm+z3M00AMiNVBAz2/ucgCWli6
+rUAPAtYfiRAA4VHyQztShLQE43P5JwivhXFopY/bvz62HoRve38CgYEAtPgxgJYTnBm9+c6c1A3G
+5TP8Olaqnc2FcSn+rF92PVHWwwKgiDwqxhs4TY5JdaKDYs5nBuupxMyNwwsPcjA+GO7hksr1nmUQ
+AS4tGkYip58XmrCvx5FVHjTDdAf5trRrjrnCCKRnieNlWCFZ5UGb4uI2icnUJpQBnYGrt9jQ+2sC
+gYAtseGc7Pr/3fRss8GRE9tkwocdbsiiAeLs/QEbFtEWIO55VlAWF6y1pERbPyFVSq5qPCYxK3aJ
+bze7WCliDTkxIlYkrpwBx7sPBkagWcrIbr2JT0HZo6aG5d7COa9hG7UtjISOVNYcYPilUdKoKpLU
+EHvIhbOf4IaqjNN3ZDoLIwKBgEA2/aHKHyU6AS5eQUoBpXz5SFwPGrWqEtrH8wWJTjSOEK3cBcix
+yN/JEt56SdjDFOn/oZFUGEar6vW1vAJh2fcQ9NwYxrUw2VAB6aE0F+Hw0vhiD8255UE1qdFHbzWE
+qdHYWmCkrdTA6tot4281K7KDYKTeCDi0NiqEs8El32oHAoGAMWMjC/K5SVEPO9ifhn69nV3ymBU7
+KUNSHIVZq4dJLFPSDkE7t6swAUIaBvdQMe1Idb+3ZwzbWPQtJUvQvfEZN/1ecy7RDZ5Fv2Oto8X2
+GD8IgQr6vZB0Z+XtUzo90dTX/PQzHT85zgC7eSZLwgaixA+eBXp5mGhvXHngAwyqw70=
+-----END RSA PRIVATE KEY-----   LampKey key-09cc2e6a89ae08f28
+
+save it in ~/.ssh/LampKey.pem 
+chmod 600 ~/.ssh/LampKey.pem
+
+C:\Users\Roopesh>aws ec2 describe-instances --instance-ids i-0468c45b665e7fcf4 --query "Reservations[*].Instances[*].PublicDnsName"
+ec2-15-206-93-148.ap-south-1.compute.amazonaws.com
+
+/mnt/c/Users/Roopesh/Desktop/DevOpsTraining/aws/AWSsetup/CF_template
